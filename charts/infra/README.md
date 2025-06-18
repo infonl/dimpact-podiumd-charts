@@ -28,4 +28,9 @@ for n in backups clusterimagecatalogs clusters databases imagecatalogs \
      kubectl annotate --overwrite $crd \
        meta.helm.sh/release-name=infra meta.helm.sh/release-namespace=default
 done
+
+# create payload namespace
+kubectl create namespace jenr
+# find postgres cluster name and superuser password to prep and apply create-schemas.yaml:
+kubectl create -f ~/info/info-podiumd-eu/clouds/gridscale/create-schemas.yaml
 ```
