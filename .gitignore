@@ -2,3 +2,4 @@
 /charts/**/charts/
 /charts/**/Chart.lock
 /http-client.private.env.json
+/.project

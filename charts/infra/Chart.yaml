@@ -1,0 +1,22 @@
+apiVersion: v2
+name: infra
+description: Infra chart for euclouds
+type: application
+version: 0.0.1
+appVersion: "0.0.1"
+dependencies:
+  - name: cloudnative-pg
+    version: 0.23.2
+    repository: https://cloudnative-pg.github.io/charts
+    condition: cnpg.enabled
+    alias: cnpg
+  - name: cluster
+    version: 0.3.1
+    repository: https://cloudnative-pg.github.io/charts
+    condition: cluster.enabled
+  - name: nfs-server-provisioner
+    repository: "@nfs-ganesha-server-and-external-provisioner"
+    version: 1.8.0
+  - name: traefik
+    repository: "@traefik"
+    version: 35.4.0

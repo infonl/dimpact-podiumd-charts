@@ -1,0 +1,43 @@
+cnpg:
+  enabled: true
+
+cluster:
+  #fullnameOverride: cluster
+  enabled: true
+  type: postgis
+  mode: standalone
+  version:
+    postgis: "3.4"
+    postgresql: "15"
+  cluster:
+    instances: 1
+    initdb:
+      database: podiumd
+  backups:
+    enabled: false
+
+nfs-server-provisioner:
+  storageClass:
+    mountOptions:
+      - vers=4
+      - retrans=2
+      - timeo=30
+  persistence:
+    enabled: true
+    size: 10Gi
+
+traefik:
+  persistence:
+    enabled: true
+    storageClass: nfs
+    accessMode: ReadWriteMany
+    size: 1Gi
+    subPath: "traefik"
+  additionalArguments:
+    - --certificatesresolvers.myresolver.acme.tlschallenge
+    - --certificatesresolvers.myresolver.acme.email=itops@info.nl
+    - --certificatesresolvers.myresolver.acme.storage=/data/acme.json
+      #- --certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+    - --certificatesresolvers.myresolver.acme.httpChallenge.entryPoint=web
+      #- --entryPoints.test.address=":80"
+      #- --entryPoints.testsecure.address=":443"

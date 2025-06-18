@@ -2,18 +2,9 @@ apiVersion: v2
 name: podiumd
 description: PodiumD Helm chart
 type: application
-version: 4.1.2
-appVersion: "4.1.2"
+version: 4.1.3
+appVersion: "4.1.3"
 dependencies:
-  - name: cloudnative-pg
-    version: 0.23.2
-    repository: https://cloudnative-pg.github.io/charts
-    condition: cnpg.enabled
-    alias: cnpg
-  - name: cluster
-    version: 0.3.1
-    repository: https://cloudnative-pg.github.io/charts
-    condition: cluster.enabled
   - name: keycloak
     version: 24.3.0
     repository: "@bitnami"
@@ -74,10 +65,4 @@ dependencies:
     version: 1.0.46
     repository: "@zac"
     condition: zac.enabled
-  - name: nfs-server-provisioner
-    repository: "@nfs-ganesha-server-and-external-provisioner"
-    version: 1.8.0
-  - name: traefik
-    repository: "@traefik"
-    version: 35.4.0
 
