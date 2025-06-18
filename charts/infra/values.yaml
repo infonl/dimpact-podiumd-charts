@@ -1,9 +1,8 @@
-cnpg:
+cloudnative-pg:
   enabled: true
 
 cluster:
   #fullnameOverride: cluster
-  enabled: true
   type: postgis
   mode: standalone
   version:
