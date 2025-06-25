@@ -9,6 +9,22 @@ global:
 
   imageRegistry: ""
 
+defaults:
+  # The following anchor defines the default configuration for Keycloak's distributed cache.
+  # Use the alias '*keycloak_distributed_cache' in other cache definitions to avoid duplication
+  # and ensure consistency across all distributed cache settings.
+  keycloak_distributed_cache: &keycloak_distributed_cache
+    statistics: "true"
+    owners: 2
+    mode: "SYNC"
+    encoding:
+      mediaType: "application/x-jboss-marshalling"
+    expiration:
+      lifespan: "-1"
+    persistence:
+      fileStore:
+        path: cache
+
 persistentVolume:
   volumeAttributeShareName: ""
   volumeAttributeResourceGroup: ""
@@ -174,92 +190,35 @@ infinispan:
         caches:
           actionTokens:
             distributedCache:
-              statistics: "true"
-              owners: 2
-              mode: "SYNC"
-              encoding:
-                mediaType: "application/x-jboss-marshalling"
+              <<: *keycloak_distributed_cache
               expiration:
                 maxIdle: "-1"
                 lifespan: "-1"
                 interval: "300000"
               memory:
                 maxCount: "-1"
-              persistence:
-                fileStore:
-                  path: cache
           sessions:
             distributedCache:
-              statistics: "true"
-              owners: 2
-              mode: "SYNC"
-              encoding:
-                mediaType: "application/x-jboss-marshalling"
+              <<: *keycloak_distributed_cache
               expiration:
+                maxIdle: "-1"
                 lifespan: "-1"
-              persistence:
-                fileStore:
-                  path: cache
+                interval: "300000"
           authenticationSessions:
             distributedCache:
-              statistics: "true"
-              owners: 2
-              mode: "SYNC"
-              encoding:
-                mediaType: "application/x-jboss-marshalling"
-              expiration:
-                lifespan: "-1"
-              persistence:
-                fileStore:
-                  path: cache
+              <<: *keycloak_distributed_cache            
           offlineSessions:
             distributedCache:
-              statistics: "true"
-              owners: 2
-              mode: "SYNC"
-              encoding:
-                mediaType: "application/x-jboss-marshalling"
-              expiration:
-                lifespan: "-1"
-              persistence:
-                fileStore:
-                  path: cache
+              <<: *keycloak_distributed_cache
           clientSessions:
             distributedCache:
-              statistics: "true"
-              owners: 2
-              mode: "SYNC"
-              encoding:
-                mediaType: "application/x-jboss-marshalling"
-              expiration:
-                lifespan: "-1"
-              persistence:
-                fileStore:
-                  path: cache
+              <<: *keycloak_distributed_cache
           offlineClientSessions:
             distributedCache:
-              statistics: "true"
-              owners: 2
-              mode: "SYNC"
-              encoding:
-                mediaType: "application/x-jboss-marshalling"
-              expiration:
-                lifespan: "-1"
-              persistence:
-                fileStore:
-                  path: cache
+              <<: *keycloak_distributed_cache
           loginFailures:
             distributedCache:
-              statistics: "true"
-              owners: 2
-              mode: "SYNC"
-              encoding:
-                mediaType: "application/x-jboss-marshalling"
-              expiration:
-                lifespan: "-1"
-              persistence:
-                fileStore:
-                  path: cache
+              <<: *keycloak_distributed_cache
           work:
             replicatedCache:
               statistics: "true"

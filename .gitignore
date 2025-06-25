@@ -3,3 +3,4 @@
 /charts/**/Chart.lock
 /http-client.private.env.json
 /.project
+/.vscode
