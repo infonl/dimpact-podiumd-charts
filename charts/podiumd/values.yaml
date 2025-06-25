@@ -10,6 +10,23 @@ global:
   imageRegistry: ""
 
 defaults:
+  # Anchor for commonly used small resource requests, e.g., for Redis master pods.
+  small_redis_resources: &small_redis_resources
+    requests:
+      cpu: 10m
+      memory: 64Mi
+  # Anchor for commonly used email settings (SMTP port and TLS).
+  common_email_settings: &common_email_settings
+    email:
+      port: 587
+      useTLS: true    
+  # Anchor for common Kubernetes Job configuration
+  common_job_config: &common_job_config
+    enabled: true
+    backoffLimit: 6
+    ttlSecondsAfterFinished: 0
+    restartPolicy: OnFailure
+    resources: {}
   # The following anchor defines the default configuration for Keycloak's distributed cache.
   # Use the alias '*keycloak_distributed_cache' in other cache definitions to avoid duplication
   # and ensure consistency across all distributed cache settings.
@@ -24,6 +41,11 @@ defaults:
     persistence:
       fileStore:
         path: cache
+  # Anchor for commonly used Redis persistence settings (enabled, size, storageClass).
+  redis_persistence_standard: &redis_persistence_standard
+    enabled: true
+    size: 8Gi
+    storageClass: ""      
 
 persistentVolume:
   volumeAttributeShareName: ""
@@ -298,11 +320,8 @@ openzaak:
     initContainer:
       enabled: false
     job:
-      enabled: true
-      backoffLimit: 6
-      ttlSecondsAfterFinished: 0    
+      <<: *common_job_config
       restartPolicy: Never
-      resources: {}
     data: ""  
     # data: |-
     #   oidc_db_config_enable: true
@@ -422,9 +441,7 @@ openzaak:
     enabled: true
   settings:
     allowedHosts: openzaak-nginx.podiumd.svc.cluster.local
-    email:
-      port: 587
-      useTLS: true
+    <<: *common_email_settings
     disable2fa: false
   persistence:
     storageClassName: nfs
@@ -464,9 +481,7 @@ openzaak:
         size: 1Gi
         storageClass: default
       resources:
-        requests:
-          cpu: 10m
-          memory: 64Mi
+        <<: *small_redis_resources
 
 opennotificaties:
   configuration:
@@ -477,11 +492,7 @@ opennotificaties:
     initContainer:
       enabled: false
     job:
-      enabled: true
-      backoffLimit: 6
-      ttlSecondsAfterFinished: 0
-      restartPolicy: OnFailure
-      resources: {}
+      <<: *common_job_config
     secrets: {}
       # keycloak_client_secret: "<keycloak_client_secret>"
       # opennotificaties_autorisatie_api_secret: "<opennotificaties_autorisatie_api_secret>"
@@ -643,9 +654,7 @@ opennotificaties:
     retryBackoff: 3
     retryBackoffMax: 48
     requestsTimeout: 60
-    email:
-      port: 587
-      useTLS: true
+    <<: *common_email_settings
     disable2fa: false
   persistence:
     size: 10Gi
@@ -684,13 +693,9 @@ opennotificaties:
     fullnameOverride: opennotificaties-redis
     master:
       persistence:
-        enabled: true
-        size: 8Gi
-        storageClass: ""
+        <<: *redis_persistence_standard
       resources:
-        requests:
-          cpu: 10m
-          memory: 64Mi
+        <<: *small_redis_resources
 
 objecten:
   configuration:
@@ -700,11 +705,7 @@ objecten:
     initContainer:
       enabled: false
     job:
-      enabled: true
-      backoffLimit: 6
-      ttlSecondsAfterFinished: 0
-      restartPolicy: OnFailure
-      resources: {}
+      <<: *common_job_config
     secrets: {}
       # keycloak_client_secret: "<keycloak_client_secret>"  
       # object_objecttypes_token: "<object_objecttypes_token>"
@@ -801,9 +802,7 @@ objecten:
     oidcSecret: "<objecten>" 
   settings:
     allowedHosts: objecten.podiumd.svc.cluster.local
-    email:
-      port: 587
-      useTLS: true
+    <<: *common_email_settings
     disable2fa: false
   persistence:
     storageClassName: nfs
@@ -833,9 +832,7 @@ objecten:
         size: 1Gi
         storageClass: default
       resources:
-        requests:
-          cpu: 10m
-          memory: 64Mi
+        <<: *small_redis_resources
 
 objecttypen:
   configuration:
@@ -843,11 +840,7 @@ objecttypen:
     initContainer:
       enabled: false
     job:
-      enabled: true
-      backoffLimit: 6
-      ttlSecondsAfterFinished: 0
-      restartPolicy: OnFailure
-      resources: {}
+      <<: *common_job_config
     secrets: {}
       # keycloak_client_secret: "<keycloak_client_secret>"
       # object_objecttypes_token: "<object_objecttypes_token>"
@@ -917,9 +910,7 @@ objecttypen:
     oidcSecret: "<objecttypen>"
   settings:
     allowedHosts: objecttypen.podiumd.svc.cluster.local
-    email:
-      port: 587
-      useTLS: true
+    <<: *common_email_settings
     disable2fa: false
   image:
     tag: "3.0.2"
@@ -941,9 +932,7 @@ objecttypen:
         size: 1Gi
         storageClass: default
       resources:
-        requests:
-          cpu: 10m
-          memory: 64Mi
+        <<: *small_redis_resources
 
 
 openarchiefbeheer:
@@ -953,10 +942,7 @@ openarchiefbeheer:
   configuration:
     enabled: false
     job:
-      enabled: true
-      backoffLimit: 6
-      ttlSecondsAfterFinished: 0
-      restartPolicy: OnFailure
+      <<: *common_job_config
     secrets: {}
     data: ""
     # data: |-
@@ -1071,9 +1057,7 @@ openarchiefbeheer:
       enabled: false
     master:
       persistence:
-        enabled: true
-        size: 8Gi
-        storageClass: ""
+        <<: *redis_persistence_standard
       resources:
         requests:
           cpu: 10m
@@ -1085,11 +1069,7 @@ openklant:
     initContainer:
       enabled: false
     job:
-      enabled: true
-      backoffLimit: 6
-      ttlSecondsAfterFinished: 0
-      restartPolicy: OnFailure
-      resources: {}
+      <<: *common_job_config
     secrets: {}
       # openklant_token: "<openklant_token>"
       # keycloak_client_secret: "<keycloak_client_secret>"   
@@ -1161,9 +1141,7 @@ openklant:
     oidcSecret: "<openklant>"
   settings:
     allowedHosts: openklant.podiumd.svc.cluster.local
-    email:
-      port: 587
-      useTLS: true
+    <<: *common_email_settings
     disable2fa: false
   persistence:
     size: 10Gi
@@ -1194,22 +1172,15 @@ openklant:
     fullnameOverride: openklant-redis
     master:
       persistence:
-        enabled: true
-        size: 8Gi
-        storageClass: ""
+        <<: *redis_persistence_standard
       resources:
-        requests:
-          cpu: 10m
-          memory: 64Mi
+        <<: *small_redis_resources
         
 openformulieren:
   configuration:
     enabled: true
     job:
-      enabled: true
-      backoffLimit: 6
-      ttlSecondsAfterFinished: 0
-      restartPolicy: OnFailure
+      <<: *common_job_config
     secrets: {}
     data: ""
     # data: |-
@@ -1333,9 +1304,7 @@ openformulieren:
     oidcSecret: "<openformulieren>"
   settings:
     allowedHosts: openformulieren-nginx.podiumd.svc.cluster.local
-    email:
-      port: 587
-      useTLS: true
+    <<: *common_email_settings
   persistence:
     size: 10Gi
     existingClaim: openformulieren
@@ -1376,13 +1345,9 @@ openformulieren:
     fullnameOverride: openformulieren-redis
     master:
       persistence:
-        enabled: true
-        size: 8Gi
-        storageClass: ""
+        <<: *redis_persistence_standard
       resources:
-        requests:
-          cpu: 10m
-          memory: 64Mi
+        <<: *small_redis_resources
 
 openinwoner:
   configuration:
@@ -1390,11 +1355,7 @@ openinwoner:
     initContainer:
       enabled: false
     job:
-      enabled: true
-      backoffLimit: 6
-      ttlSecondsAfterFinished: 0
-      restartPolicy: OnFailure
-      resources: {}
+      <<: *common_job_config
     data: ""
     # data: |-
     #   oidc_db_config_enable: True
@@ -1503,9 +1464,7 @@ openinwoner:
     brpVersion: ""
     digidMock: ""
     eherkenningMock: ""
-    email:
-      port: 587
-      useTLS: true
+    <<: *common_email_settings
   persistence:
     size: 10Gi
     existingClaim: openinwoner
@@ -1544,9 +1503,7 @@ openinwoner:
     fullnameOverride: openinwoner-redis
     master:
       persistence:
-        enabled: true
-        size: 8Gi
-        storageClass: ""
+        <<: *redis_persistence_standard
       resources:
         requests:
           cpu: 20m
