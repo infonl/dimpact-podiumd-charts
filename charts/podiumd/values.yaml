@@ -222,10 +222,6 @@ infinispan:
           sessions:
             distributedCache:
               <<: *keycloak_distributed_cache
-              expiration:
-                maxIdle: "-1"
-                lifespan: "-1"
-                interval: "300000"
           authenticationSessions:
             distributedCache:
               <<: *keycloak_distributed_cache            
@@ -942,7 +938,10 @@ openarchiefbeheer:
   configuration:
     enabled: false
     job:
-      <<: *common_job_config
+      enabled: true
+      backoffLimit: 6
+      ttlSecondsAfterFinished: 0
+      restartPolicy: OnFailure
     secrets: {}
     data: ""
     # data: |-
@@ -1180,7 +1179,10 @@ openformulieren:
   configuration:
     enabled: true
     job:
-      <<: *common_job_config
+      enabled: true
+      backoffLimit: 6
+      ttlSecondsAfterFinished: 0
+      restartPolicy: OnFailure
     secrets: {}
     data: ""
     # data: |-
