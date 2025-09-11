@@ -106,7 +106,7 @@ keycloak:
       registry: ""
       repository: bitnami/keycloak-config-cli
       # -- image tag for keycloak-config-cli, this must be a version that is compatible with the keycloak image tag
-      tag: "6.1.6"
+      tag: "6.4.0"
   metrics:
     enabled: true
   pdb:
